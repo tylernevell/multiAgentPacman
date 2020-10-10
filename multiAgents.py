@@ -477,8 +477,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
                 successor = gameState.generateSuccessor(agentIndex, action)
                 temp_tuple = expectimaxValue(successor, depth, agentIndex + 1)
                 v = temp_tuple[0]
-                exp_tuple[0] += v * p
-                exp_tuple[1] = action
+                exp_tuple = (exp_tuple[0] + v * p, action)
 
 
             return exp_tuple
@@ -493,7 +492,9 @@ def betterEvaluationFunction(currentGameState):
       DESCRIPTION: <write something here so we know what you did>
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    pac_pos = currentGameState.getPacmanPosition()
+    ghost_pos = currentGameState.getGhostPositions()
+
 
 # Abbreviation
 better = betterEvaluationFunction
