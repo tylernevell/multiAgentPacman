@@ -94,7 +94,7 @@ class ReflexAgent(Agent):
             if distToFood <= minDistToFood:
                 minDistToFood = distToFood
             
-        
+        # reciprocal of food distance
         minDistToFood_score = (1.0 / minDistToFood)
 
         # need to get distance from ghost
@@ -103,10 +103,11 @@ class ReflexAgent(Agent):
             #print(ghost.getPosition())
             distToGhost += manhattanDistance(newPos, ghostState.getPosition())
         
+        # reciprocal of ghost distance
         distToGhost_score = (1.0 / distToGhost)
         # print(minDistToFood)
         # print("-----------")
-        print(successorGameState.getScore())
+        #print(successorGameState.getScore())
         return successorGameState.getScore() + minDistToFood_score - distToGhost_score
 
 def scoreEvaluationFunction(currentGameState):
@@ -275,11 +276,12 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
             # I've ensured every return value is a tuple in order to prevent errors and be able to
             # keep track of the move that comes with our optimal values
 
-            # we've won
+            # we've won........ or lost
             if gameState.isWin() or gameState.isLose():
                 return (self.evaluationFunction(gameState), "Stop")
             
-            # we're out of our element as an agent and need to let the algorithm catch up
+            # avoid reaching maximum recursion depth while we haven't reached an ending a win or loss. Nothing else to expand, return score
+            # of current game state and stop. Until this check was added, I kept breaking the game
             if depth >= self.depth:
                 return (self.evaluationFunction(gameState), "Stop")
             
@@ -493,7 +495,29 @@ def betterEvaluationFunction(currentGameState):
     """
     "*** YOUR CODE HERE ***"
     pac_pos = currentGameState.getPacmanPosition()
-    ghost_pos = currentGameState.getGhostPositions()
+    # ghost_pos = currentGameState.getGhostPositions()
+    newFoodList = currentGameState.getFood().asList()
+    
+    distToFood = [manhattanDistance(pac_pos, food) for food in newFoodList]
+    
+    if len(distToFood) == 0:
+        distToFood.append(0)
+
+    state_of_food = min(distToFood)
+
+    # distToGhost = [manhattanDistance(pac_pos, ghost) for ghost in ghost_pos]
+
+    # if len(distToGhost) == 0:
+    #     distToGhost.append(0)
+
+    # state_of_ghost = min(distToGhost)
+
+
+
+    return currentGameState.getScore() - state_of_food # + state_of_ghost
+
+
+
 
 
 # Abbreviation
